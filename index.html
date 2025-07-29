@@ -13,7 +13,7 @@
     <style>
       .info-icon {
         position: fixed;
-        bottom: 20px;
+        bottom: 50px;
         right: 20px;
         width: 40px;
         height: 40px;
@@ -27,6 +27,10 @@
         cursor: pointer;
         z-index: 1000;
         transition: background 0.3s ease;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
       }
       
       .info-icon:hover {
@@ -35,7 +39,7 @@
       
       .tooltip {
         position: fixed;
-        bottom: 70px;
+        bottom: 100px;
         right: 20px;
         background: rgba(0, 0, 0, 0.9);
         color: white;
@@ -52,7 +56,8 @@
       }
       
       .info-icon:hover + .tooltip,
-      .tooltip:hover {
+      .tooltip:hover,
+      .tooltip.show {
         opacity: 1;
         visibility: visible;
       }
@@ -61,14 +66,79 @@
         content: '';
         position: absolute;
         bottom: -8px;
-        right: 25px;
+        right: 20px;
         width: 0;
         height: 0;
         border-left: 8px solid transparent;
         border-right: 8px solid transparent;
         border-top: 8px solid rgba(0, 0, 0, 0.9);
       }
+      
+      /* Mobile responsive design */
+      @media (max-width: 768px) {
+        .info-icon {
+          width: 50px;
+          height: 50px;
+          font-size: 24px;
+          bottom: 60px;
+          right: 25px;
+        }
+        
+        .tooltip {
+          bottom: 120px;
+          right: 25px;
+          max-width: calc(100vw - 50px);
+          font-size: 16px;
+        }
+        
+        .tooltip::after {
+          right: 25px;
+        }
+      }
     </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const infoIcon = document.querySelector('.info-icon');
+        const tooltip = document.querySelector('.tooltip');
+        
+        function hideTooltip() {
+          tooltip.classList.remove('show');
+        }
+        
+        function showTooltip() {
+          tooltip.classList.add('show');
+        }
+        
+        function toggleTooltip() {
+          if (tooltip.classList.contains('show')) {
+            hideTooltip();
+          } else {
+            showTooltip();
+          }
+        }
+        
+        // Click on info icon toggles tooltip
+        infoIcon.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleTooltip();
+        });
+        
+        // Click on tooltip hides it
+        tooltip.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          hideTooltip();
+        });
+        
+        // Click anywhere else hides tooltip
+        document.addEventListener('click', function(e) {
+          if (!infoIcon.contains(e.target) && !tooltip.contains(e.target)) {
+            hideTooltip();
+          }
+        });
+      });
+    </script>
   </head>
   <body style="margin: 0">
     <iframe
