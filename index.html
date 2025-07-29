@@ -11,19 +11,20 @@
       gtag('config', 'G-1JXWE3KPDW');
     </script>
     <style>
+      /* Mobile-first design */
       .info-icon {
         position: fixed;
-        bottom: 50px;
+        bottom: 80px;
         right: 20px;
-        width: 40px;
-        height: 40px;
-        background: rgba(0, 0, 0, 0.7);
+        width: 60px;
+        height: 60px;
+        background: rgba(0, 0, 0, 0.8);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 20px;
+        font-size: 32px;
         cursor: pointer;
         z-index: 1000;
         transition: background 0.3s ease;
@@ -31,32 +32,35 @@
         -webkit-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
       }
       
-      .info-icon:hover {
+      .info-icon:hover,
+      .info-icon:active {
         background: rgba(0, 0, 0, 0.9);
       }
       
       .tooltip {
         position: fixed;
-        bottom: 100px;
+        bottom: 150px;
         right: 20px;
+        left: 20px;
         background: rgba(0, 0, 0, 0.9);
         color: white;
-        padding: 15px;
-        border-radius: 8px;
-        max-width: 300px;
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        line-height: 1.4;
+        padding: 20px;
+        border-radius: 12px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        font-size: 18px;
+        line-height: 1.5;
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0.3s ease;
         z-index: 1001;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
       }
       
-      .info-icon:hover + .tooltip,
-      .tooltip:hover,
       .tooltip.show {
         opacity: 1;
         visibility: visible;
@@ -65,34 +69,45 @@
       .tooltip::after {
         content: '';
         position: absolute;
-        bottom: -8px;
-        right: 20px;
+        bottom: -12px;
+        right: 50px;
         width: 0;
         height: 0;
-        border-left: 8px solid transparent;
-        border-right: 8px solid transparent;
-        border-top: 8px solid rgba(0, 0, 0, 0.9);
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-top: 12px solid rgba(0, 0, 0, 0.9);
       }
       
-      /* Mobile responsive design */
-      @media (max-width: 768px) {
+      /* Desktop adjustments */
+      @media (min-width: 769px) {
         .info-icon {
-          width: 50px;
-          height: 50px;
+          width: 45px;
+          height: 45px;
           font-size: 24px;
-          bottom: 60px;
-          right: 25px;
+          bottom: 50px;
         }
         
         .tooltip {
-          bottom: 120px;
-          right: 25px;
-          max-width: calc(100vw - 50px);
+          left: auto;
+          right: 20px;
+          bottom: 105px;
+          max-width: 350px;
           font-size: 16px;
+          padding: 16px;
         }
         
         .tooltip::after {
-          right: 25px;
+          right: 22px;
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+          border-top: 10px solid rgba(0, 0, 0, 0.9);
+          bottom: -10px;
+        }
+        
+        .info-icon:hover + .tooltip,
+        .tooltip:hover {
+          opacity: 1;
+          visibility: visible;
         }
       }
     </style>
@@ -110,28 +125,36 @@
         }
         
         function toggleTooltip() {
-          if (tooltip.classList.contains('show')) {
-            hideTooltip();
-          } else {
-            showTooltip();
-          }
+          tooltip.classList.toggle('show');
         }
         
-        // Click on info icon toggles tooltip
-        infoIcon.addEventListener('click', function(e) {
+        // Handle both touch and click events for better mobile support
+        function addTouchAndClickHandler(element, handler) {
+          element.addEventListener('touchend', handler);
+          element.addEventListener('click', handler);
+        }
+        
+        // Info icon toggles tooltip
+        addTouchAndClickHandler(infoIcon, function(e) {
           e.preventDefault();
           e.stopPropagation();
           toggleTooltip();
         });
         
-        // Click on tooltip hides it
-        tooltip.addEventListener('click', function(e) {
+        // Tooltip hides on tap/click
+        addTouchAndClickHandler(tooltip, function(e) {
           e.preventDefault();
           e.stopPropagation();
           hideTooltip();
         });
         
-        // Click anywhere else hides tooltip
+        // Hide tooltip when tapping elsewhere
+        document.addEventListener('touchend', function(e) {
+          if (!infoIcon.contains(e.target) && !tooltip.contains(e.target)) {
+            hideTooltip();
+          }
+        });
+        
         document.addEventListener('click', function(e) {
           if (!infoIcon.contains(e.target) && !tooltip.contains(e.target)) {
             hideTooltip();
