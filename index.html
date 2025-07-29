@@ -163,6 +163,22 @@
             hideTooltip();
           }
         });
+        
+        function updateJulianAge() {
+          // Julian was born July 24th, 2025 at 12:59 AM California time (PDT)
+          const birthDate = new Date('2025-07-24T00:59:00-07:00');
+          const now = new Date();
+          const ageInMilliseconds = now - birthDate;
+          const ageInDays = ageInMilliseconds / (1000 * 60 * 60 * 24);
+          
+          const ageElement = document.getElementById('julian-age');
+          if (ageElement) {
+            ageElement.textContent = ageInDays.toFixed(5);
+          }
+        }
+        
+        updateJulianAge();
+        setInterval(updateJulianAge, 10000);
       });
     </script>
   </head>
@@ -177,7 +193,7 @@
     <div class="info-icon">ℹ️</div>
     <div class="tooltip">
       <strong>Welcome to julian.live!</strong><br><br>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      This is a baby camera above <span id="julian-age">0.00000</span> days old baby Julian's bassinet. He doesn't always sleep in there, but when he does you'll get to see him! I have 8 siblings living far away from me and I want them to follow along with Julian's early days.
     </div>
   </body>
 </html>
