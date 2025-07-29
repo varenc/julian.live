@@ -1,0 +1,3 @@
+# Private files - don't check in publicly
+CLAUDE_SUMMARY.md
+stream.sh
