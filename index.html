@@ -15,10 +15,15 @@
     </script>
     <style>
       /* Mobile-first design */
-      .info-icon {
+      .info-container {
         position: fixed;
         bottom: 125px;
         right: 20px;
+        z-index: 1000;
+      }
+      
+      .info-icon {
+        position: relative;
         width: 60px;
         height: 60px;
         background: rgba(0, 0, 0, 0.8);
@@ -29,7 +34,6 @@
         color: white;
         font-size: 32px;
         cursor: pointer;
-        z-index: 1000;
         transition: background 0.3s ease;
         user-select: none;
         -webkit-user-select: none;
@@ -45,10 +49,10 @@
       }
       
       .tooltip {
-        position: fixed;
-        bottom: 195px;
-        right: 20px;
-        left: 20px;
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        left: calc(-100vw + 80px);
         background: rgba(0, 0, 0, 0.9);
         color: white;
         padding: 20px;
@@ -73,7 +77,7 @@
         content: '';
         position: absolute;
         bottom: -12px;
-        right: 50px;
+        right: 30px;
         width: 0;
         height: 0;
         border-left: 12px solid transparent;
@@ -83,18 +87,21 @@
       
       /* Desktop adjustments */
       @media (min-width: 769px) {
+        .info-container {
+          bottom: 50px;
+        }
+        
         .info-icon {
           width: 45px;
           height: 45px;
           font-size: 24px;
-          bottom: 50px;
         }
         
         .tooltip {
-          left: auto;
-          right: 20px;
-          bottom: 105px;
-          max-width: 350px;
+          left: -330px;
+          right: auto;
+          bottom: 55px;
+          width: 350px;
           font-size: 16px;
           padding: 16px;
         }
@@ -197,10 +204,12 @@
       msallowfullscreen>
     </iframe>
     
-    <div class="info-icon">ℹ️</div>
-    <div class="tooltip">
-      <strong>Welcome to julian.live!</strong><br><br>
-      Meet Julian! He's <span id="julian-age">0.00000</span> days old and this baby camera watches over his bassinet. He doesn't always sleep here, but when he does you'll get to see him! I have 8 siblings living far away and want them to follow along with Julian's early days.
+    <div class="info-container">
+      <div class="info-icon">ℹ️</div>
+      <div class="tooltip">
+        <strong>Welcome to julian.live!</strong><br><br>
+        Meet Julian! He's <span id="julian-age">0.00000</span> days old and this baby camera watches over his bassinet. He doesn't always sleep here, but when he does you'll get to see him! I have 8 siblings living far away and want them to follow along with Julian's early days.
+      </div>
     </div>
   </body>
 </html>
