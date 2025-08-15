@@ -85,7 +85,7 @@
         border-top: 12px solid rgba(0, 0, 0, 0.9);
       }
       
-      /* Week Birthday Banner */
+      /* Birthday Banner - Julian & Mama Rilka */
       .birthday-banner {
         position: relative;
         width: 100%;
@@ -95,6 +95,24 @@
         overflow: hidden;
         transition: height 1.2s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 100;
+      }
+      
+      /* Mama Rilka's Special Birthday - More Extravagant! */
+      .birthday-banner.mama-birthday {
+        background: linear-gradient(135deg, #ff0a78, #ff6b35, #f7931e, #ffe066, #ff1744, #e91e63, #9c27b0, #673ab7, #3f51b5, #2196f3);
+        background-size: 400% 400%;
+        animation: mamaGradientShift 3s ease-in-out infinite;
+      }
+      
+      .birthday-banner.mama-birthday.show {
+        height: 130px; /* Taller for mama's birthday */
+      }
+      
+      @keyframes mamaGradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        25% { background-position: 100% 0%; }
+        50% { background-position: 100% 100%; }
+        75% { background-position: 0% 100%; }
       }
       
       .birthday-banner.show {
@@ -148,10 +166,40 @@
       .floating-emoji:nth-child(3) { left: 80%; animation-delay: 1s; }
       .floating-emoji:nth-child(4) { left: 90%; animation-delay: 1.5s; }
       
+      /* Extra floating elements for Mama's birthday */
+      .floating-emoji:nth-child(5) { left: 5%; animation-delay: 0.3s; }
+      .floating-emoji:nth-child(6) { left: 30%; animation-delay: 0.8s; }
+      .floating-emoji:nth-child(7) { left: 70%; animation-delay: 1.3s; }
+      .floating-emoji:nth-child(8) { left: 95%; animation-delay: 1.8s; }
+      
       @keyframes float {
         0%, 100% { transform: translateY(0px) rotate(0deg); }
         50% { transform: translateY(-10px) rotate(5deg); }
       }
+      
+      /* Sparkle animation for Mama's birthday */
+      .sparkle {
+        position: absolute;
+        font-size: 16px;
+        animation: sparkle 2s ease-in-out infinite;
+        pointer-events: none;
+      }
+      
+      @keyframes sparkle {
+        0%, 100% { 
+          transform: scale(0.5) rotate(0deg);
+          opacity: 0.7;
+        }
+        50% { 
+          transform: scale(1.2) rotate(180deg);
+          opacity: 1;
+        }
+      }
+      
+      .sparkle:nth-child(9) { left: 15%; top: 20%; animation-delay: 0.2s; }
+      .sparkle:nth-child(10) { left: 35%; top: 70%; animation-delay: 0.7s; }
+      .sparkle:nth-child(11) { left: 65%; top: 30%; animation-delay: 1.2s; }
+      .sparkle:nth-child(12) { left: 85%; top: 60%; animation-delay: 1.7s; }
       
       .video-container {
         height: calc(100vh - var(--banner-height, 0px));
@@ -207,6 +255,10 @@
           height: 100px; /* Desktop height - same as mobile */
         }
         
+        .birthday-banner.mama-birthday.show {
+          height: 150px; /* Extra tall for mama's birthday on desktop */
+        }
+        
         .birthday-text {
           font-size: clamp(24px, 3vw, 36px);
         }
@@ -214,11 +266,16 @@
         .floating-emoji {
           font-size: 28px;
         }
+        
+        .sparkle {
+          font-size: 20px;
+        }
       }
     </style>
     <script>
-      // Debug flag for testing week birthday banner
+      // Debug flags for testing birthday banners
       const DEBUG_BIRTHDAY = false; // Set to false for production
+      const DEBUG_MAMA_BIRTHDAY = false; // Set to false for production
       
       document.addEventListener('DOMContentLoaded', function() {
         const infoIcon = document.querySelector('.info-icon');
@@ -281,14 +338,52 @@
             ageElement.textContent = ageInDays.toFixed(5);
           }
           
-          // Check for week birthday
-          checkWeekBirthday(ageInDays);
+          // Check for birthdays (Mama Rilka takes priority)
+          checkBirthdays(ageInDays);
         }
         
-        function checkWeekBirthday(ageInDays) {
+        function checkBirthdays(ageInDays) {
+          const now = new Date();
+          const month = now.getMonth() + 1; // 1-12
+          const day = now.getDate();
+          const banner = document.querySelector('.birthday-banner');
+          
+          // Check for Mama Rilka's birthday (August 20th) - PRIORITY
+          const isMamaBirthday = (month === 8 && day === 20) || DEBUG_MAMA_BIRTHDAY;
+          
+          if (isMamaBirthday) {
+            showMamaBirthday(banner);
+          } else {
+            // Check for Julian's week birthday only if not Mama's birthday
+            checkJulianWeekBirthday(ageInDays, banner);
+          }
+        }
+        
+        function showMamaBirthday(banner) {
+          if (banner) {
+            const birthdayText = document.querySelector('.birthday-text');
+            
+            if (birthdayText) {
+              const debugText = DEBUG_MAMA_BIRTHDAY ? ' [DEBUG MODE]' : '';
+              birthdayText.textContent = `🌹 Happy Birthday to Mama Rilka! 🌹${debugText}`;
+            }
+            
+            // Add extra decorations for Mama's birthday
+            addMamaDecorations(banner);
+            
+            if (!banner.classList.contains('show')) {
+              banner.classList.add('mama-birthday');
+              setTimeout(() => {
+                banner.classList.add('show');
+                updateVideoHeight(true, true); // true for isMama
+              }, 500);
+            }
+          }
+        }
+        
+        function checkJulianWeekBirthday(ageInDays, banner) {
           const dayFloor = Math.floor(ageInDays);
           const isWeekBirthday = dayFloor > 0 && dayFloor % 7 === 0;
-          const banner = document.querySelector('.birthday-banner');
           
           // Debug mode: simulate 3rd week birthday
           const debugWeekBirthday = DEBUG_BIRTHDAY;
@@ -303,18 +398,48 @@
               birthdayText.textContent = `🎉 Happy ${getOrdinal(weekNumber)} Week Birthday, Julian! 🎉${debugText}`;
             }
             
+            // Remove mama birthday class if it exists
+            banner.classList.remove('mama-birthday');
+            
             if (!banner.classList.contains('show')) {
-              // Animate banner in
               setTimeout(() => {
                 banner.classList.add('show');
-                updateVideoHeight(true);
+                updateVideoHeight(true, false); // false for not mama
               }, 500);
             }
-          } else if (banner && banner.classList.contains('show')) {
-            // Hide banner if not a week birthday
+          } else if (banner && banner.classList.contains('show') && !banner.classList.contains('mama-birthday')) {
+            // Hide banner if not a week birthday (and not mama's birthday)
             banner.classList.remove('show');
-            updateVideoHeight(false);
+            updateVideoHeight(false, false);
           }
+        }
+        
+        function addMamaDecorations(banner) {
+          // Add extra floating decorations for Mama's birthday
+          const extraEmojis = ['🌹', '💐', '🎀', '💎'];
+          const extraSparkles = ['✨', '⭐', '💫', '🌟'];
+          
+          // Clear existing extra decorations
+          banner.querySelectorAll('.extra-decoration').forEach(el => el.remove());
+          
+          extraEmojis.forEach((emoji, index) => {
+            const floatingEmoji = document.createElement('div');
+            floatingEmoji.className = 'floating-emoji extra-decoration';
+            floatingEmoji.textContent = emoji;
+            floatingEmoji.style.left = `${15 + index * 20}%`;
+            floatingEmoji.style.animationDelay = `${index * 0.4}s`;
+            banner.appendChild(floatingEmoji);
+          });
+          
+          extraSparkles.forEach((sparkle, index) => {
+            const sparkleEl = document.createElement('div');
+            sparkleEl.className = 'sparkle extra-decoration';
+            sparkleEl.textContent = sparkle;
+            sparkleEl.style.left = `${20 + index * 25}%`;
+            sparkleEl.style.top = `${30 + (index % 2) * 40}%`;
+            sparkleEl.style.animationDelay = `${index * 0.3}s`;
+            banner.appendChild(sparkleEl);
+          });
         }
         
         function getOrdinal(number) {
@@ -323,8 +448,17 @@
           return number + (suffixes[(remainder - 20) % 10] || suffixes[remainder] || suffixes[0]);
         }
         
-        function updateVideoHeight(showBanner) {
-          const height = showBanner ? '100px' : '0px';
+        function updateVideoHeight(showBanner, isMama = false) {
+          let height = '0px';
+          if (showBanner) {
+            if (isMama) {
+              // Mama's birthday is taller
+              height = window.innerWidth > 768 ? '150px' : '130px';
+            } else {
+              // Julian's week birthday
+              height = '100px';
+            }
+          }
           document.documentElement.style.setProperty('--banner-height', height);
         }
         
