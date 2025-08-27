@@ -348,13 +348,23 @@
           const day = now.getDate();
           const banner = document.querySelector('.birthday-banner');
           
-          // Check for Mama Rilka's birthday (August 20th) - PRIORITY
+          // Check for Mama Rilka's birthday (August 20th) - HIGHEST PRIORITY
           const isMamaBirthday = (month === 8 && day === 20) || DEBUG_MAMA_BIRTHDAY;
+          
+          // Check for Julian's yearly birthday (July 24th) - SECOND PRIORITY
+          const isJulianYearlyBirthday = (month === 7 && day === 24);
+          
+          // Check for Julian's monthly birthday (24th of any month) - THIRD PRIORITY
+          const isJulianMonthlyBirthday = (day === 24 && month !== 7); // Exclude July 24 (yearly)
           
           if (isMamaBirthday) {
             showMamaBirthday(banner);
+          } else if (isJulianYearlyBirthday) {
+            showJulianYearlyBirthday(banner);
+          } else if (isJulianMonthlyBirthday) {
+            showJulianMonthlyBirthday(banner);
           } else {
-            // Check for Julian's week birthday only if not Mama's birthday
+            // Check for Julian's week birthday only if no other birthdays
             checkJulianWeekBirthday(ageInDays, banner);
           }
         }
@@ -412,6 +422,83 @@
             banner.classList.remove('show');
             updateVideoHeight(false, false);
           }
+        }
+        
+        function showJulianYearlyBirthday(banner) {
+          if (banner) {
+            const birthdayText = document.querySelector('.birthday-text');
+            
+            if (birthdayText) {
+              // Calculate which yearly birthday this is
+              const now = new Date();
+              const currentYear = now.getFullYear();
+              const yearNumber = currentYear - 2025 + 1; // Born in 2025, so 2025=1st, 2026=2nd, etc.
+              birthdayText.textContent = `🎂 Happy ${getOrdinal(yearNumber)} Birthday, Julian! 🎂`;
+            }
+            
+            // Add extra decorations for yearly birthday (like Mama's)
+            addYearlyDecorations(banner);
+            
+            if (!banner.classList.contains('show')) {
+              banner.classList.add('mama-birthday'); // Use same styling as Mama's
+              setTimeout(() => {
+                banner.classList.add('show');
+                updateVideoHeight(true, true); // true for isMama styling (big banner)
+              }, 500);
+            }
+          }
+        }
+        
+        function showJulianMonthlyBirthday(banner) {
+          if (banner) {
+            const birthdayText = document.querySelector('.birthday-text');
+            
+            if (birthdayText) {
+              const now = new Date();
+              const monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June', 
+                                  'July', 'August', 'September', 'October', 'November', 'December'];
+              const currentMonth = monthNames[now.getMonth() + 1];
+              birthdayText.textContent = `🗓️ Happy Monthly Birthday, Julian! (${currentMonth} 24th) 🗓️`;
+            }
+            
+            // Remove mama birthday class if it exists
+            banner.classList.remove('mama-birthday');
+            
+            if (!banner.classList.contains('show')) {
+              setTimeout(() => {
+                banner.classList.add('show');
+                updateVideoHeight(true, false); // false for not mama styling (regular banner)
+              }, 500);
+            }
+          }
+        }
+        
+        function addYearlyDecorations(banner) {
+          // Add extra floating decorations for Julian's yearly birthday (similar to Mama's but Julian-themed)
+          const extraEmojis = ['🎂', '🎁', '🎈', '🎊'];
+          const extraSparkles = ['✨', '🌟', '💫', '⭐'];
+          
+          // Clear existing extra decorations
+          banner.querySelectorAll('.extra-decoration').forEach(el => el.remove());
+          
+          extraEmojis.forEach((emoji, index) => {
+            const floatingEmoji = document.createElement('div');
+            floatingEmoji.className = 'floating-emoji extra-decoration';
+            floatingEmoji.textContent = emoji;
+            floatingEmoji.style.left = `${15 + index * 20}%`;
+            floatingEmoji.style.animationDelay = `${index * 0.4}s`;
+            banner.appendChild(floatingEmoji);
+          });
+          
+          extraSparkles.forEach((sparkle, index) => {
+            const sparkleEl = document.createElement('div');
+            sparkleEl.className = 'sparkle extra-decoration';
+            sparkleEl.textContent = sparkle;
+            sparkleEl.style.left = `${20 + index * 25}%`;
+            sparkleEl.style.top = `${30 + (index % 2) * 40}%`;
+            sparkleEl.style.animationDelay = `${index * 0.3}s`;
+            banner.appendChild(sparkleEl);
+          });
         }
         
         function addMamaDecorations(banner) {
