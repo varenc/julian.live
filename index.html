@@ -107,6 +107,28 @@
       .birthday-banner.mama-birthday.show {
         height: 130px; /* Taller for mama's birthday */
       }
+
+      /* Travel Banner - More subdued styling */
+      .birthday-banner.travel-mode {
+        background: linear-gradient(135deg, #667eea, #764ba2, #ff9a9e, #fad0c4, #a8edea, #fed6e3);
+        background-size: 300% 300%;
+        animation: travelGradientShift 6s ease-in-out infinite;
+      }
+
+      .birthday-banner.travel-mode.show {
+        height: 100px; /* Same as weekly birthday */
+      }
+
+      @keyframes travelGradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        33% { background-position: 50% 0%; }
+        66% { background-position: 100% 50%; }
+      }
+
+      /* Smaller text for travel banner */
+      .birthday-banner.travel-mode .birthday-text {
+        font-size: clamp(14px, 3vw, 22px);
+      }
       
       @keyframes mamaGradientShift {
         0%, 100% { background-position: 0% 50%; }
@@ -270,12 +292,20 @@
         .sparkle {
           font-size: 20px;
         }
+
+        /* Desktop styling for travel banner text */
+        .birthday-banner.travel-mode .birthday-text {
+          font-size: clamp(18px, 2.5vw, 28px);
+        }
       }
     </style>
     <script>
       // Debug flags for testing birthday banners
       const DEBUG_BIRTHDAY = false; // Set to false for production
       const DEBUG_MAMA_BIRTHDAY = false; // Set to false for production
+
+      // Travel mode - set to true when Julian is traveling
+      const TRAVEL_MODE = false; // Set to true when Julian is traveling with parents
       
       document.addEventListener('DOMContentLoaded', function() {
         const infoIcon = document.querySelector('.info-icon');
@@ -348,16 +378,22 @@
           const month = now.getMonth() + 1; // 1-12
           const day = now.getDate();
           const banner = document.querySelector('.birthday-banner');
-          
-          // Check for Mama Rilka's birthday (August 20th) - HIGHEST PRIORITY
+
+          // Check for Travel Mode - HIGHEST PRIORITY
+          if (TRAVEL_MODE) {
+            showTravelBanner(banner);
+            return;
+          }
+
+          // Check for Mama Rilka's birthday (August 20th) - SECOND PRIORITY
           const isMamaBirthday = (month === 8 && day === 20) || DEBUG_MAMA_BIRTHDAY;
-          
-          // Check for Julian's yearly birthday (July 24th) - SECOND PRIORITY
+
+          // Check for Julian's yearly birthday (July 24th) - THIRD PRIORITY
           const isJulianYearlyBirthday = (month === 7 && day === 24);
-          
-          // Check for Julian's monthly birthday (24th of any month) - THIRD PRIORITY
+
+          // Check for Julian's monthly birthday (24th of any month) - FOURTH PRIORITY
           const isJulianMonthlyBirthday = (day === 24 && month !== 7); // Exclude July 24 (yearly)
-          
+
           if (isMamaBirthday) {
             showMamaBirthday(banner);
           } else if (isJulianYearlyBirthday) {
@@ -370,6 +406,30 @@
           }
         }
         
+        function showTravelBanner(banner) {
+          if (banner) {
+            const birthdayText = document.querySelector('.birthday-text');
+
+            if (birthdayText) {
+              birthdayText.textContent = `✈️ Julian is traveling! Playing old clips instead of live 🎬`;
+            }
+
+            // Add travel-themed decorations
+            addTravelDecorations(banner);
+
+            // Remove other banner classes and add travel mode
+            banner.classList.remove('mama-birthday');
+            banner.classList.add('travel-mode');
+
+            if (!banner.classList.contains('show')) {
+              setTimeout(() => {
+                banner.classList.add('show');
+                updateVideoHeight(true, false); // false for regular height (not mama)
+              }, 500);
+            }
+          }
+        }
+
         function showMamaBirthday(banner) {
           if (banner) {
             const birthdayText = document.querySelector('.birthday-text');
@@ -381,7 +441,10 @@
             
             // Add extra decorations for Mama's birthday
             addMamaDecorations(banner);
-            
+
+            // Remove other banner classes and add mama birthday
+            banner.classList.remove('travel-mode');
+
             if (!banner.classList.contains('show')) {
               banner.classList.add('mama-birthday');
               setTimeout(() => {
@@ -409,8 +472,9 @@
               birthdayText.textContent = `🎉 Happy ${getOrdinal(weekNumber)} Week Birthday, Julian! 🎉${debugText}`;
             }
             
-            // Remove mama birthday class if it exists
+            // Remove other banner classes if they exist
             banner.classList.remove('mama-birthday');
+            banner.classList.remove('travel-mode');
             
             if (!banner.classList.contains('show')) {
               setTimeout(() => {
@@ -439,7 +503,10 @@
             
             // Add extra decorations for yearly birthday (like Mama's)
             addYearlyDecorations(banner);
-            
+
+            // Remove other banner classes and add mama styling for yearly birthday
+            banner.classList.remove('travel-mode');
+
             if (!banner.classList.contains('show')) {
               banner.classList.add('mama-birthday'); // Use same styling as Mama's
               setTimeout(() => {
@@ -462,8 +529,9 @@
               birthdayText.textContent = `🗓️ Happy Monthly Birthday, Julian! (${currentMonth} 24th) 🗓️`;
             }
             
-            // Remove mama birthday class if it exists
+            // Remove other banner classes if they exist
             banner.classList.remove('mama-birthday');
+            banner.classList.remove('travel-mode');
             
             if (!banner.classList.contains('show')) {
               setTimeout(() => {
@@ -502,14 +570,33 @@
           });
         }
         
+        function addTravelDecorations(banner) {
+          // Add just 4 travel-themed floating decorations (more subdued)
+          const selectedTravelEmojis = ['✈️', '🚗', '🧳', '📸'];
+
+          // Clear ALL existing floating emojis (including hardcoded birthday ones)
+          banner.querySelectorAll('.floating-emoji').forEach(el => el.remove());
+          banner.querySelectorAll('.extra-decoration').forEach(el => el.remove());
+
+          selectedTravelEmojis.forEach((emoji, index) => {
+            const floatingEmoji = document.createElement('div');
+            floatingEmoji.className = 'floating-emoji extra-decoration';
+            floatingEmoji.textContent = emoji;
+            floatingEmoji.style.left = `${15 + index * 20}%`;
+            floatingEmoji.style.animationDelay = `${index * 0.8}s`; // Slower animation
+            floatingEmoji.style.animationDuration = '4s'; // Slower floating
+            banner.appendChild(floatingEmoji);
+          });
+        }
+
         function addMamaDecorations(banner) {
           // Add extra floating decorations for Mama's birthday
           const extraEmojis = ['🌹', '💐', '🎀', '💎'];
           const extraSparkles = ['✨', '⭐', '💫', '🌟'];
-          
+
           // Clear existing extra decorations
           banner.querySelectorAll('.extra-decoration').forEach(el => el.remove());
-          
+
           extraEmojis.forEach((emoji, index) => {
             const floatingEmoji = document.createElement('div');
             floatingEmoji.className = 'floating-emoji extra-decoration';
@@ -518,7 +605,7 @@
             floatingEmoji.style.animationDelay = `${index * 0.4}s`;
             banner.appendChild(floatingEmoji);
           });
-          
+
           extraSparkles.forEach((sparkle, index) => {
             const sparkleEl = document.createElement('div');
             sparkleEl.className = 'sparkle extra-decoration';
