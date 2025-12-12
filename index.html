@@ -361,16 +361,44 @@
           // Julian was born July 24th, 2025 at 12:59 AM California time (PDT)
           const birthDate = new Date('2025-07-24T00:59:00-07:00');
           const now = new Date();
-          const ageInMilliseconds = now - birthDate;
-          const ageInDays = ageInMilliseconds / (1000 * 60 * 60 * 24);
-          const ageInWeeks = ageInDays / 7;
+
+          // Calculate months by counting monthly birthdays (24th of each month)
+          let months = 0;
+          let currentMonth = new Date(birthDate);
+
+          while (true) {
+            // Move to next monthly birthday
+            currentMonth.setMonth(currentMonth.getMonth() + 1);
+            if (currentMonth <= now) {
+              months++;
+            } else {
+              break;
+            }
+          }
+
+          // Get the date of the most recent monthly birthday
+          const lastMonthlyBirthday = new Date(birthDate);
+          lastMonthlyBirthday.setMonth(birthDate.getMonth() + months);
+
+          // Calculate time since last monthly birthday
+          const timeSinceLastMonthly = now - lastMonthlyBirthday;
+          const daysSinceLastMonthly = timeSinceLastMonthly / (1000 * 60 * 60 * 24);
+
+          // Calculate weeks and remaining days
+          const weeks = Math.floor(daysSinceLastMonthly / 7);
+          const remainingDays = daysSinceLastMonthly - (weeks * 7);
 
           const ageElement = document.getElementById('julian-age');
           if (ageElement) {
-            ageElement.textContent = ageInWeeks.toFixed(5);
+            // Format: "X month, Y weeks, Z.##### days old"
+            const monthText = months === 1 ? 'month' : 'months';
+            const weekText = weeks === 1 ? 'week' : 'weeks';
+            ageElement.textContent = `${months} ${monthText}, ${weeks} ${weekText}, ${remainingDays.toFixed(5)} days old`;
           }
 
-          // Check for birthdays (Mama Rilka takes priority)
+          // Check for birthdays (use original total days calculation)
+          const ageInMilliseconds = now - birthDate;
+          const ageInDays = ageInMilliseconds / (1000 * 60 * 60 * 24);
           checkBirthdays(ageInDays);
         }
         
