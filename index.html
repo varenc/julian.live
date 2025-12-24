@@ -408,20 +408,16 @@
           const day = now.getDate();
           const banner = document.querySelector('.birthday-banner');
 
-          // Check for Travel Mode - HIGHEST PRIORITY
-          if (TRAVEL_MODE) {
-            showTravelBanner(banner);
-            return;
-          }
-
-          // Check for Mama Rilka's birthday (August 20th) - SECOND PRIORITY
+          // Check for Mama Rilka's birthday (August 20th) - HIGHEST PRIORITY
           const isMamaBirthday = (month === 8 && day === 20) || DEBUG_MAMA_BIRTHDAY;
 
-          // Check for Julian's yearly birthday (July 24th) - THIRD PRIORITY
+          // Check for Julian's yearly birthday (July 24th) - SECOND PRIORITY
           const isJulianYearlyBirthday = (month === 7 && day === 24);
 
-          // Check for Julian's monthly birthday (24th of any month) - FOURTH PRIORITY
+          // Check for Julian's monthly birthday (24th of any month) - THIRD PRIORITY
           const isJulianMonthlyBirthday = (day === 24 && month !== 7); // Exclude July 24 (yearly)
+
+          // Travel Mode - FOURTH PRIORITY (below all birthdays)
 
           if (isMamaBirthday) {
             showMamaBirthday(banner);
@@ -429,8 +425,10 @@
             showJulianYearlyBirthday(banner);
           } else if (isJulianMonthlyBirthday) {
             showJulianMonthlyBirthday(banner);
+          } else if (TRAVEL_MODE) {
+            showTravelBanner(banner);
           } else {
-            // Check for Julian's week birthday only if no other birthdays
+            // Check for Julian's week birthday only if no other birthdays or travel mode
             checkJulianWeekBirthday(ageInDays, banner);
           }
         }
