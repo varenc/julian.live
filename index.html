@@ -306,7 +306,12 @@
 
       // Travel mode - set to true when Julian is traveling
       // const TRAVEL_MODE = true; // Set to true when Julian is traveling with parents
-      const TRAVEL_MODE = false;
+      const TRAVEL_MODE = (() => {
+        const now = new Date();
+        const start = new Date('2025-12-29T11:00:00-08:00'); // 12/29 11am PST
+        const end = new Date('2026-01-02T20:00:00-08:00');   // 1/2 8pm PST
+        return now >= start && now < end;
+      })();
       
       document.addEventListener('DOMContentLoaded', function() {
         const infoIcon = document.querySelector('.info-icon');
@@ -439,7 +444,7 @@
 
             if (birthdayText) {
               // birthdayText.textContent = `✈️ Julian is traveling! Playing old clips instead of live 🎬`;
-              birthdayText.textContent = `Julian is visiting his family in Kansas! Expect disruptions, but back online soon.`;
+              birthdayText.textContent = `Julian is off partying at New Years with baby friends. Expect disruptions, but back soon.`;
             }
 
             // Add travel-themed decorations
