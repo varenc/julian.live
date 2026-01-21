@@ -305,13 +305,14 @@
       const DEBUG_MAMA_BIRTHDAY = false;
 
       // Travel mode - set to true when Julian is traveling
-      // const TRAVEL_MODE = true; // Set to true when Julian is traveling with parents
-      const TRAVEL_MODE = (() => {
-        const now = new Date();
-        const start = new Date('2025-12-29T11:00:00-08:00'); // 12/29 11am PST
-        const end = new Date('2026-01-02T20:00:00-08:00');   // 1/2 8pm PST
-        return now >= start && now < end;
-      })();
+      const TRAVEL_MODE = true; // Moving!
+      // const TRAVEL_MODE = (() => {
+      //   const now = new Date();
+      //   const start = new Date('2025-12-29T11:00:00-08:00'); // 12/29 11am PST
+      //   const end = new Date('2026-01-02T20:00:00-08:00');   // 1/2 8pm PST
+      //   return now >= start && now < end;
+      // })();
+
       
       document.addEventListener('DOMContentLoaded', function() {
         const infoIcon = document.querySelector('.info-icon');
@@ -440,11 +441,11 @@
         
         function showTravelBanner(banner) {
           if (banner) {
-            const birthdayText = document.querySelector('.birthday-text');
+            const travelModeText = document.querySelector('.birthday-text');
 
-            if (birthdayText) {
+            if (travelModeText) {
               // birthdayText.textContent = `✈️ Julian is traveling! Playing old clips instead of live 🎬`;
-              birthdayText.textContent = `Julian is off partying at New Years with baby friends. Expect disruptions, but back soon.`;
+              travelModeText.textContent = `Julian is moving to his new home! Enjoy old clip on loop (he's already so much bigger 🥹).`;
             }
 
             // Add travel-themed decorations
