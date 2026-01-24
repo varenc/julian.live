@@ -557,10 +557,9 @@
             
             if (birthdayText) {
               const now = new Date();
-              const monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June', 
-                                  'July', 'August', 'September', 'October', 'November', 'December'];
-              const currentMonth = monthNames[now.getMonth() + 1];
-              birthdayText.textContent = `🗓️ Happy Monthly Birthday, Julian! (${currentMonth} 24th) 🗓️`;
+              // Julian born July 2025, calculate months old
+              const monthsOld = (now.getFullYear() - 2025) * 12 + (now.getMonth() + 1 - 7);
+              birthdayText.textContent = `🗓️ Happy ${monthsOld}-Month Birthday Julian! 🗓️`;
             }
             
             // Remove other banner classes if they exist
