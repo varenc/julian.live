@@ -317,6 +317,12 @@
       document.addEventListener('DOMContentLoaded', function() {
         const infoIcon = document.querySelector('.info-icon');
         const tooltip = document.querySelector('.tooltip');
+
+        // set a timer so that after 10 minutes, the '.info-icon' is hidden
+        setTimeout(() => {
+          infoIcon.style.display = 'none';
+          tooltip.style.display = 'none';
+        }, 10 * 60 * 1000); // 10 minutes in milliseconds
         
         function hideTooltip() {
           tooltip.classList.remove('show');
