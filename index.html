@@ -305,13 +305,12 @@
       const DEBUG_MAMA_BIRTHDAY = false;
 
       // Travel mode - set to true when Julian is traveling
-      const TRAVEL_MODE = false;
-      // const TRAVEL_MODE = (() => {
-      //   const now = new Date();
-      //   const start = new Date('2025-12-29T11:00:00-08:00'); // 12/29 11am PST
-      //   const end = new Date('2026-01-02T20:00:00-08:00');   // 1/2 8pm PST
-      //   return now >= start && now < end;
-      // })();
+      const TRAVEL_MODE = (() => {
+        const now = new Date();
+        const start = new Date('2026-04-17T12:40:00-07:00'); // 4/17 12:40pm PDT
+        const end = new Date('2026-04-20T14:00:00-07:00');   // 4/20 2pm PDT (Sunday)
+        return now >= start && now < end;
+      })();
 
       
       document.addEventListener('DOMContentLoaded', function() {
@@ -450,7 +449,7 @@
             const travelModeText = document.querySelector('.birthday-text');
 
             if (travelModeText) {
-              birthdayText.textContent = `✈️ Julian is traveling to Georgia! Back online soon... 🤞🤞🤞`;
+              travelModeText.textContent = `✈️ Julian is traveling! Back online soon... 🤞🤞🤞`;
               // travelModeText.textContent = `Password being added soon! Ask one of Julian's parents if you need to know :-)`;
             }
 
