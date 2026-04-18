@@ -305,12 +305,13 @@
       const DEBUG_MAMA_BIRTHDAY = false;
 
       // Travel mode - set to true when Julian is traveling
-      const TRAVEL_MODE = (() => {
-        const now = new Date();
-        const start = new Date('2026-04-17T12:40:00-07:00'); // 4/17 12:40pm PDT
-        const end = new Date('2026-04-20T14:00:00-07:00');   // 4/20 2pm PDT (Sunday)
-        return now >= start && now < end;
-      })();
+      const TRAVEL_MODE = false;
+      // const TRAVEL_MODE = (() => {
+      //   const now = new Date();
+      //   const start = new Date('2026-04-17T12:40:00-07:00'); // 4/17 12:40pm PDT
+      //   const end = new Date('2026-04-20T14:00:00-07:00');   // 4/20 2pm PDT (Sunday)
+      //   return now >= start && now < end;
+      // })();
 
       
       document.addEventListener('DOMContentLoaded', function() {
